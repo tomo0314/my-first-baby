@@ -82,6 +82,8 @@ $posts=array_reverse($posts);
         </form>
     </section>
 
+    <a href="login.php">ログインはこちら</a>
+
     <section>
         <h2>これまでの投稿一覧(<?php echo count($posts); ?>件)</h2>
         <ul>
