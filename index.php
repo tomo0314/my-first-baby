@@ -102,4 +102,8 @@ $posts=array_reverse($posts);
     </section>
 </body>
 
+<ul>
+            <li><a href="logout.php">ログアウト</a></li>
+        </ul>
+
 </html>
