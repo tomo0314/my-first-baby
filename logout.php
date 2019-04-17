@@ -7,9 +7,16 @@ if(isset($_SESSION["NAME"])){
     $errorMessagee="セッションがタイムアウトしました";
 }
 
+#セッション変数（ユーザーの情報）を空の配列によって初期化する
 $_SESSION=array();
 
-@session_destroy();
+#cookie（ブラウザ）上のユーザーデータも削除
+if (isset($_COOKIE[session_name()])) {
+    setcookie(session_name(), '', time()-42000, '/');
+}
+
+#ユーザーのサーバーからのセッションの削除
+session_destroy();
 ?>
 
 

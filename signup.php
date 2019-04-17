@@ -1,4 +1,3 @@
-
 <?php
 
 session_start();
@@ -6,7 +5,7 @@ session_start();
 $db['host']="localhost";
 $db['user']="still";
 $db['pass']="Rose0314@";
-$db['dbname']="loginManagement";
+$db['dbname']="bbs";
 
 $errorMessage="";
 $signUpMessage="";
@@ -25,24 +24,24 @@ if(isset($_POST["signUp"])){
 
     if(!empty($_POST["username"]) && !empty($_POST["email"]) && !empty($_POST["password"]) && !empty($_POST["passwrod2"]) && $_POST["password"] === $_POST["pasword2"]){
     
-    $name=$_POST["username"];
-    $email=$_POST["email"];
-    $password=$_POST["password"]; 
+        $username=$_POST["username"];
+        $email=$_POST["email"];
+        $password=$_POST["password"]; 
     
-    $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
-    
-    try{
-        $pdo=new PDO($dsn, $db["user"],$db["pass"],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
-    
-        $stmt=$PDO->prepare("INSERT INTO UserData(name,email, password) VALUES(?,?)");
+        $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
         
-        $stmt->execute(array($username,password_hash($password, PASSWORD_DEFAULT)));
-        $userid = $pdo->lastinsertid();
+        try{
+            $pdo=new PDO($dsn, $db['user'],$db['pass'],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+        
+            $stmt=$PDO->prepare("INSERT INTO UserData(username, email, password) VALUES(?,?,?)");
+            
+            $stmt->execute(array($username, $email, password_hash($password, PASSWORD_DEFAULT)));
+            $id = $pdo->lastinsertid('id');
 
-        $signUpMessage="登録が完了しました。あなたの登録IDは'.$userid.'です。パスワードは'.$password.'です。";
-    }catch (PDOException $e){
-        $errorMessage="データベースエラー";
-    }
+            $signUpMessage="登録が完了しました。あなたの登録メールアドレスは'.$email.'です。パスワードは'.$password.'です。";
+        }catch (PDOException $e){
+            $errorMessage="データベースエラー";
+        }
     }else if($_POST["password"] != $_POST["password2"]){
         $errorMessage="パスワードに誤りがあります。";
     }
@@ -54,8 +53,8 @@ if(isset($_POST["signUp"])){
 <html lang="ja">
 
 <head>
-<meta charset="utf-8">
-<title>新規登録</title>
+    <meta charset="utf-8">
+    <title>新規登録</title>
 </head>
 
 <body>
@@ -71,7 +70,7 @@ if(isset($_POST["signUp"])){
             <br>
             <label for="password">パスワード</label><input type="password" id="password" name="password" value="" placeholder="パスワードを入力">
             <br>
-            <label for="password2">パスワード(確認用)</label><input type="password" id="password2" name="password2" value="" placeholder="パスワードを入力">
+            <label for="password2">パスワード(確認用)</label><input type="password" id="password2" name="password2" value="" placeholder="再度パスワードを入力">
             <br>
             <input type="submit" id="signUp" name="signUp" value="新規ユーザー登録">
         </fieldset>

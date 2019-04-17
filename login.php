@@ -6,7 +6,7 @@ session_start();
 $db['host']="localhost";
 $db['user']="still";
 $db['pass']="Rose0314@";
-$db['dbname']="loginManagement";
+$db['dbname']="bbs";
 
 #エラーメッセージの初期化
 $errorMessage="";
@@ -25,7 +25,7 @@ if (isset($_POST["login"])){
         $email= $_POST["email"];
        
         #dsnの設定（上の$dbで変えられるよう、％ｓの変数で取る）
-        $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
+        $dsn=sprintf('mysql:dbname=%s; host=%s; charset=utf8mb4', $db['dbname'],$db['host'] );
     
         #エラー処理
         try{
@@ -33,7 +33,7 @@ if (isset($_POST["login"])){
             $pdo= new PDO($dsn, $db['user'], $db['pass'], array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
             
             #データベースにあるemailとの照合
-            $stmt= $pdo->prepare("SELECT*FROM UserData WHERE name=?");
+            $stmt= $pdo->prepare("SELECT * FROM UserData WHERE name=?");
             $stmt->execute(array($email));
             
             $password= $$_POST["password"];
@@ -47,14 +47,14 @@ if (isset($_POST["login"])){
 
                     #入力したemailのユーザー名を取得
                     $email=$row['email'];
-                    $sql="SELECT*FROM UserData WHERE email=$email";
+                    $sql="SELECT * FROM UserData WHERE email=$email";
                     $stmt=$pdo->query($sql);
 
                     foreach ($stmt as $row){
-                        $row['name'];
+                        $row['usename'];
                     }
                     
-                    $_SESSION["NAME"]=$row['name'];
+                    $_SESSION["USERNAME"]=$row['username'];
                     header("Location: index.php");
                     
                     exit();
@@ -90,7 +90,7 @@ if (isset($_POST["login"])){
         <fieldset>
             <legend>ログインフォーム</legend>
             <div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
-            <label for="userid">メールアドレス</label><input type="text" id="email" name="email" placeholder="メールアドレスを入力" value="<?php if (!empty($_POST["email"])){echo htmlspecialchars($_POST["email"],ENT_QUOTES);} ?>">
+            <label for="email">メールアドレス</label><input type="text" id="email" name="email" placeholder="メールアドレスを入力" value="<?php if (!empty($_POST["email"])){echo htmlspecialchars($_POST["email"],ENT_QUOTES);} ?>">
             <br>
             <label for="password">パスワード</label><input type="password" id="password" name="password" value="" placeholder="パスワードを入力">
             <br>

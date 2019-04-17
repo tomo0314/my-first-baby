@@ -1,63 +1,52 @@
 <?php
 
-$dataFile="bbs.dat";
-
-/*
-//CSRF対策
-
 session_start();
 
-function setToken(){
-    $token=sha1(uniqid(mt_rand(),true));
-    $_SESSION["token"]=$token;
-}
+$db['host']="localhost";
+$db['user']="still";
+$db['pass']="Rose0314@";
+$db['dbname']="bbs";
 
-function checkToken(){
-    if(empty($_SESSION["token"]) || ($_SESSION["token"]!= $_POST["token"])){
-        echo "不正なPOSTが行われました";
-        exit;
+$errorMessage="";
+
+
+if (isset($_POST['regist'])){
+
+    if (empty($_POST["username"])){
+        $errorMessage="ユーザー名を入力してください。";
+    }else if(empty($_POST["message"])){
+        $errorMessage="本文を入力してください。";
     }
-}
 
-*/
-
-function h($s){
-    return htmlspecialchars($s,ENT_QUOTES,"utf-8");
-}
-
-if ($_SERVER["REQUEST_METHOD"]==="POST" &&
-isset($_POST["user"]) && 
-isset($_POST["message"])){
-
-    // checkToken();
-
-    $user= trim($_POST["user"]);
-    $message=trim($_POST["message"]);
-
-    if ($message !== ''){
-       
-        if($user ===""){
-            $user="名無しさん";
-        }else{
-            $user=$user;
-        }
-        $user= str_replace("\t", ' ',$user);
-        $message= str_replace("\t", ' ',$message);
+    if(!empty($_POST["username"]) && !empty($_POST["messagae"])){
+    
+        $username= trim($_POST["username"]);
+        $message=trim($_POST["message"]);
         $postedAt=date("Y-m-d:i:s");
-        
-        $newData= $user."\t" . $message."\t" . $postedAt."\n";
-        
-        $fp=fopen($dataFile, "a");
-        fwrite($fp, $newData);
-        fclose($fp);
-    }
-    }
-// else{
-// setToken();
-//  }
 
-$posts=file($dataFile, FILE_IGNORE_NEW_LINES);
-$posts=array_reverse($posts);
+        $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
+
+        try{
+            $pdo=new PDO($dsn, $db['user'],$db['pass'],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+
+            #コードちゃんと理解していない
+            $stmt=$pdo->prepare("INSERT INTO articles(username, message, postedAt) VALUES(:username, :message, :posteAt)");
+            $stmt->binParam(':username', $username, PDO::PARAM_STR);
+            $stmt->binParam(':message', $message, PDO::PARAM_STR);
+            $stmt->binParam(':postedAt', $postedAt, PDO::PARAM_STR);
+            $stmt->execute();
+            $pdo->query($stmt);
+
+            #INSERTしたのち、ページを更新
+            header("Location: " . $_SERVER['PHP_SELF']);
+            
+        }catch (PDOException $e){
+                $errorMessage="データベースエラー";
+        } 
+    }
+}
+        
+    
 ?>
  
 
@@ -75,35 +64,33 @@ $posts=array_reverse($posts);
     <section>
         <h2>新規投稿</h2>
         <form action="" method="post">
-            名前：<input type="text" name="user" value=""><br>
+        <div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
+            名前：<input type="text" name="username" value=""><br>
             本文：<textarea name="message" cols="30" rows="3" maxlength="80" wrap="hard" placeholder="80文字以内で入力せよ！" ></textarea>
-            <input type="submit" value="投稿">
-            <!-- <input type="hidden" name="token" vlaue="<?php echo h($_SESSION["token"]); ?>"> -->
+            <input type="submit" name="regist" value="投稿">
         </form>
     </section>
 
     <a href="login.php">ログインはこちら</a>
 
     <section>
-        <h2>これまでの投稿一覧(<?php echo count($posts); ?>件)</h2>
+        <!-- <h2>これまでの投稿一覧(<?php echo count($stmt); ?>件)</h2> -->
+            <?php
+            $sql="SELECT * FROM articles ORDER BY id DESC";
+            $stmt=$pdo->query($sql);
+            ?>
         <ul>
-            <?php if (count($posts)): ?>
-                <?php foreach ($posts as $post): ?>
-                <?php list($user,$message,$postedAt)=explode("\t", $post); ?>
-                    <li>(<?php echo h($user); ?>):<?php echo h($message); ?>-<?php echo h($postedAt); ?></li>
-                <?php endforeach ?>
-                   
-            <?php else : ?> 
-            <li>まだ投稿はありません</li>
-            <?php endif; ?>
-            
+            <?php foreach ($stmt as $row) : ?>
+                <li><?php echo htmlspecialchars($row['username'],ENT_QUOTES|ENT_HTML5).' '.htmlspecialchars($row['message'],ENT_QUOTES|ENT_HTML5).' '.htmlspecialchars($row['postedAt'],ENT_QUOTES|ENT_HTML5);?></li>
+            <br>
+            <?php endforeach; ?>            
         </ul>
 
     </section>
+
+    <ul>
+        <li><a href="logout.php">ログアウト</a></li>
+    </ul>
+
 </body>
-
-<ul>
-            <li><a href="logout.php">ログアウト</a></li>
-        </ul>
-
 </html>
