@@ -2,6 +2,10 @@
 
 session_start();
 
+if (isset($_SESSION['username'])){
+    header('Location: index.php');
+    exit();
+}
 #データベースの設定
 $db['host']="localhost";
 $db['user']="still";
@@ -13,15 +17,16 @@ $errorMessage="";
 
 #ログインボタンpush後の処理
 if (isset($_POST["login"])){
+    
     if (empty($_POST["email"])){
         $errorMessage="メールアドレスが未入力です。";
     }else if (empty($_POST["password"])){
         $errorMessage="パスワードが未入力です。";
     }
 
-    #データベース処理・認証
     if(!empty($_POST["email"]) && !empty($_POST["password"])){
-        
+
+        #データベース処理・認証 
         $email= $_POST["email"];
        
         #dsnの設定（上の$dbで変えられるよう、％ｓの変数で取る）
@@ -30,39 +35,30 @@ if (isset($_POST["login"])){
         #エラー処理
         try{
             #データベース接続
-            $pdo= new PDO($dsn, $db['user'], $db['pass'], array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+            $pdo= new PDO($dsn, $db['user'], $db['pass'], array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));      
             
             #データベースにあるemailとの照合
-            $stmt= $pdo->prepare("SELECT * FROM UserData WHERE name=?");
+            $stmt= $pdo->prepare("SELECT * FROM UserData WHERE email=?");
             $stmt->execute(array($email));
-            
-            $password= $$_POST["password"];
 
-            #emailが見つかった後のパスワード認証
-            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $password=$_POST["password"];
+
+            #一致したuserのデータを連想配列で取得
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $hash_pass=$result['password'];
                 
-                #パスワード認証
-                if (password_verify($password, $row['password'])){
-                    session_regenerate_id(true);//認証終わり
+            #パスワード認証
+            if (password_verify($password, $hash_pass)){
+                session_regenerate_id(true);//認証終わり
 
-                    #入力したemailのユーザー名を取得
-                    $email=$row['email'];
-                    $sql="SELECT * FROM UserData WHERE email=$email";
-                    $stmt=$pdo->query($sql);
-
-                    foreach ($stmt as $row){
-                        $row['usename'];
-                    }
-                    
-                    $_SESSION["USERNAME"]=$row['username'];
-                    header("Location: index.php");
-                    
-                    exit();
-                }else{
-                    $errorMessage="メールアドレスあるいはパスワードに誤りがあります。";
-                }
+                #入力したemailのユーザー名を取得 
+                $username=$result['username'];
+                $_SESSION['username']=$username;
+                header("Location: index.php");
+                exit();
+               
             }else{
-                $errorMessage="メールアドレスあるいはパスワードに誤りがあります。";
+                $errorMessage="メールアドレスまたはパスワードに誤りがあります。";
             }
         #例外処理    
         }catch (PDOException $e){

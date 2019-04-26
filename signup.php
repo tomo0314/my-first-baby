@@ -12,38 +12,37 @@ $signUpMessage="";
 
 if(isset($_POST["signUp"])){
 
-    if(empty($_POST["uesrname"])){
+    if(empty($_POST["username"])){
         $errorMessage="ユーザー名が未入力です。";
     }else if(empty($_POST["email"])){
         $errorMessage="メールアドレスが未入力です。";
-    }else if(empty($_POST["password1"])){
+    }else if(empty($_POST["password"])){
         $errorMessage="パスワードが未入力です。";
     }else if(empty($_POST["password2"])){
-        $errorMessage="パスワード(確認用)が未入力です。";
-    }
-
-    if(!empty($_POST["username"]) && !empty($_POST["email"]) && !empty($_POST["password"]) && !empty($_POST["passwrod2"]) && $_POST["password"] === $_POST["pasword2"]){
+        $errorMessage="パスワードを2回入力してください。これはパスワードの入力ミスを防ぐためです。";
+    }else if($_POST["password"] != $_POST["password2"]){
+        $errorMessage="再入力されたパスワードが一致していません。";
+    }else{
     
         $username=$_POST["username"];
         $email=$_POST["email"];
         $password=$_POST["password"]; 
     
-        $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
+        $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'], $db['host'] );
         
         try{
             $pdo=new PDO($dsn, $db['user'],$db['pass'],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
         
-            $stmt=$PDO->prepare("INSERT INTO UserData(username, email, password) VALUES(?,?,?)");
+            $stmt=$pdo->prepare("INSERT INTO UserData(username, email, password) VALUES(?,?,?)");
             
             $stmt->execute(array($username, $email, password_hash($password, PASSWORD_DEFAULT)));
-            $id = $pdo->lastinsertid('id');
 
-            $signUpMessage="登録が完了しました。あなたの登録メールアドレスは'.$email.'です。パスワードは'.$password.'です。";
+            $signUpMessage="登録が完了しました。あなたの登録メールアドレスは`$email`です。パスワードは`$password`です。";
         }catch (PDOException $e){
             $errorMessage="データベースエラー";
+            $e->getMessage();
+            echo $e->getMessage();
         }
-    }else if($_POST["password"] != $_POST["password2"]){
-        $errorMessage="パスワードに誤りがあります。";
     }
 }
 ?>
@@ -72,7 +71,7 @@ if(isset($_POST["signUp"])){
             <br>
             <label for="password2">パスワード(確認用)</label><input type="password" id="password2" name="password2" value="" placeholder="再度パスワードを入力">
             <br>
-            <input type="submit" id="signUp" name="signUp" value="新規ユーザー登録">
+            <input type="submit" id="signUp" name="signUp" value="新規登録">
         </fieldset>
 
     </form>
