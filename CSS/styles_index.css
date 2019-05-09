@@ -1,0 +1,72 @@
+body{
+    text-align:center;
+    font-family: 'ＭＳ Ｐ明朝','MS PMincho','ＭＳ 明朝', 'MS Mincho','Yu Mincho Light','YuMincho','Yu Mincho','游明朝体',sans-serif;
+    background:#333333;
+    margin:0 0;
+    padding:0 0;
+}
+
+.contaigner{
+    width:880px;
+    margin:30px auto;
+    background:white;
+}
+
+
+ul {
+    list-style: none;
+  }
+
+.header{
+    position:relative;
+}
+
+.header h1{
+    position: absolute;
+    color:white;
+    top:50vh;
+    left:30px;
+    font-size:30px;
+}
+
+h2 {
+    position: relative;
+    padding: 0.25em 0;
+    font-size:30px;
+  }
+
+  h2:after {
+    content: "";
+    display: block;
+    height: 4px;
+    background: -webkit-linear-gradient(to right, gray, transparent);
+    background: linear-gradient(to right, gray, transparent);
+  }
+
+.header_img{
+    width:100%;
+    position:relative;
+    height: 60vh;
+    margin: 0 0;
+    padding:0 0;
+}
+
+
+.message{
+    margin-top:5px;
+    margin-bottom:12px;
+}
+
+
+
+.username{
+  text-align: left;
+}
+
+.box24{
+    margin: 2em auto;
+    padding: 1em;
+    width: 90%;
+    background-color: #FFFFFF; /* 背景色 */
+    box-shadow: 0 0 5px 1px #ccc; /* 影 */
+   }

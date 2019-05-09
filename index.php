@@ -26,6 +26,8 @@ if (isset($_POST['regist'])){
         #ユーザー名・本文・投稿時間の取得
         $username= ($_SESSION["username"]);
         $message=($_POST["message"]);
+
+        date_default_timezone_set('Asia/Tokyo');
         $postedAt=date("Y-m-d:i:s");
 
         $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
@@ -49,18 +51,6 @@ if (isset($_POST['regist'])){
         $errorMessage="書き込みをするためには、ログインが必要です。";
     }
 }
-
-if (isset($_POST["delete"])){
-    $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
-    $pdo=new PDO($dsn, $db['user'],$db['pass'],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
-
-    $delete_id=$_POST["delete_id"];
-    $sql="DELETE FROM articles WHERE id = $delete_id";
-
-    if($pdo->query($sql)){
-        $errorMessage="削除が完了しました。";
-    }
-}
         
     
 ?>
@@ -71,30 +61,37 @@ if (isset($_POST["delete"])){
 
 <head>
     <meta charset="utf-8">
-    <title>僕らの掲示板</title>
+    <title>philosophy</title>
+    <link rel="stylesheet" type="text/css" href="CSS/styles_index.css">
 </head>
 
 <body>
-    <h1>進路と受験の悩みについて語ろうや！</h1>
+    <div class="header">
+    <img src="photos/header.png" alt=header_photo class="header_img"> 
+    <h1>Philosophy -life,work,love and loss-</h1>
+    </div>
 
+    <div class="contaigner">
     <section>
-        <h2>新規投稿</h2>
+        <h2>New Post</h2>
         <form action="" method="post">
         <div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
-            名前：<?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES); ?><br>
-            本文：<textarea name="message" cols="30" rows="3" maxlength="80" wrap="hard" placeholder="80文字以内で入力してください。" ></textarea>
+            <div class="name">名前<br>
+            <?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES); ?></div><br>
+            <div class="message">メッセージ<br>
+            <textarea name="message" cols="30" rows="3" maxlength="80" wrap="hard" placeholder="80文字以内で入力してください。" ></textarea></div>
             <input type="submit" name="regist" value="投稿">
         </form>
     </section>
 
     <ul>
-        <li><a href="login.php">ログインはこちら</a></li>
+        <li><a href="login.php">ログイン</a></li>
 
         <li><a href="logout.php">ログアウト</a></li>
     </ul>
 
-    <section>
-        <h2>これまでの投稿一覧</h2> 
+    <section class="Posts">
+        <h2>Posts</h2> 
             <?php
             $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
             $pdo=new PDO($dsn, $db['user'],$db['pass'],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
@@ -106,23 +103,26 @@ if (isset($_POST["delete"])){
         
         <ul>
             <?php while($articles= $stmt->fetch(PDO::FETCH_ASSOC)) : ?>
+                <div class="box24">
                 <li><tr>
-                    <td><?php echo h($articles['username']);?></td>
+                    <td><?php echo h($articles['username'])?></td><br>
                     <td><?php echo h($articles['message']);?></td>
                     <td><?php echo h($articles['postedAt']);?></td>
+                    <td>
                     <form action="" method="post">
 						<input type="hidden" name="delete_id" value=<?php echo $articles['id']; ?>>
+                        <input type="hidden" name="delete_username" value=<?php echo $articles['username']; ?>>
 						<button class="btn btn-danger" name="delete" type="submit">削除</button>
 					</form>
-                <br>
-                
+                    </td>
                 </tr>
                 </li>    
+                </div>
             
             <?php endwhile; ?>       
         </ul>
 
     </section>
-
+</div>
 </body>
 </html>

@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * このアプリケーションの中で全体的に使われるパラメータ
+ * @return array
+ */
+function getGrobalConfig() {
+    return [
+        'mysql' => [
+            'username' => 'still',
+            'password' => 'Rose0314@',
+            'dbname' => 'bbs',
+            'host' => 'localhost'
+        ]
+    ];
+}

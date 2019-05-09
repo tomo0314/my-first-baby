@@ -1,0 +1,10 @@
+# このファイルを create.sql にリネームして dbname, username, password の項目を編集してください
+# その後コマンドラインからこの sql ファイルを読み込んでください
+# 例: mysql -u root -ppassword < create.sql
+
+# データベース自体を作成
+CREATE DATABASE dbname CHARACTER SET utf8;
+
+# データベースにアクセスするためのユーザーを作成
+GRANT ALL ON dbname.* to username@localhost identified by 'password';
+FLUSH PRIVILEGES;

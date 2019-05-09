@@ -75,36 +75,36 @@ if (isset($_POST["login"])){
 
 <head>
     <meta charset="utf-8">
-    <title>ログイン</title>
+    <link rel="stylesheet" type="text/css" href="CSS/styles_login.css">
+    <title>Sign In</title>
 </head>
 
 <body>
-
-    <h1>ログイン画面</h1>
+    <div class="form-wrapper">
+    <h1>Sign In</h1>
     <form id="loginForm" name="loginForm" action="" method="POST">
+      
+        <div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
+        
+        <div class="form-item">
+            <label for="email">E-mail</label>
+            <input type="text" id="email" name="email" placeholder="メールアドレスを入力" value="<?php if (!empty($_POST["email"])){echo htmlspecialchars($_POST["email"],ENT_QUOTES);} ?>">
+        </div>
 
-        <fieldset>
-            <legend>ログインフォーム</legend>
-            <div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
-            <label for="email">メールアドレス</label><input type="text" id="email" name="email" placeholder="メールアドレスを入力" value="<?php if (!empty($_POST["email"])){echo htmlspecialchars($_POST["email"],ENT_QUOTES);} ?>">
-            <br>
-            <label for="password">パスワード</label><input type="password" id="password" name="password" value="" placeholder="パスワードを入力">
-            <br>
-            <input type="submit" id="login" name="login" value="ログイン">
-        </fieldset>
+        <div class="form-item">
+        <label for="password">password</label>
+        <input type="password" id="password" name="password" value="" placeholder="パスワードを入力">
+        </div>
+        
+        <div class="button-panel">
+        <input type="submit" id="login" class="button" name="login" value="SIGN IN">
+        </div>
     </form>
     <br>
 
-    <form action="signup.php">
-        <fieldset>
-            <legend>新規アカウント登録</legend>
-            <input type="submit" value="新規登録">
-        </fieldset>
-        
-    </form>
-
-
-
+    <div class="form-footer">
+        <p><a href="signup.php">Create an account</a></p>
+    </div>
 </body>
 
 
