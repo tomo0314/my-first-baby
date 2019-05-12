@@ -51,6 +51,28 @@ if (isset($_POST['regist'])){
         $errorMessage="書き込みをするためには、ログインが必要です。";
     }
 }
+
+#削除
+if (isset($_POST["delete"])){
+
+    $delete_username=$_POST["delete_username"];
+
+    if(!isset($_SESSION["username"])){
+        $errorMessage="削除にはログインが必要です。";
+    }else if($_SESSION["username"] !== $delete_username){
+        $errorMessage="書き込んだユーザーのみ削除をすることができます。";
+    }else{
+        $dsn=sprintf('mysql:dbname=%s;host=%s;charset=utf8mb4', $db['dbname'],$db['host'] );
+        $pdo=new PDO($dsn, $db['user'],$db['pass'],array(PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION));
+    
+        $delete_id=$_POST["delete_id"];
+        $sql="DELETE FROM articles WHERE id = $delete_id";
+    
+        if($pdo->query($sql)){
+            $errorMessage="削除が完了しました。";
+        }
+    }
+}
         
     
 ?>
@@ -67,20 +89,20 @@ if (isset($_POST['regist'])){
 
 <body>
     <div class="header">
-    <img src="photos/header.png" alt=header_photo class="header_img"> 
-    <h1>Philosophy -life,work,love and loss-</h1>
+    <img src="/CSS/photos/header.jpg" alt=header_photo class="header_img"> 
+    <h1>Philosophy -life,work and love-</h1>
     </div>
 
     <div class="contaigner">
     <section>
         <h2>New Post</h2>
         <form action="" method="post">
-        <div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
+        <div class="form"><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
             <div class="name">名前<br>
             <?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES); ?></div><br>
             <div class="message">メッセージ<br>
             <textarea name="message" cols="30" rows="3" maxlength="80" wrap="hard" placeholder="80文字以内で入力してください。" ></textarea></div>
-            <input type="submit" name="regist" value="投稿">
+            <input class="button" type="submit" name="regist" value="投稿">
         </form>
     </section>
 
@@ -89,7 +111,7 @@ if (isset($_POST['regist'])){
 
         <li><a href="logout.php">ログアウト</a></li>
     </ul>
-
+        
     <section class="Posts">
         <h2>Posts</h2> 
             <?php
@@ -103,16 +125,20 @@ if (isset($_POST['regist'])){
         
         <ul>
             <?php while($articles= $stmt->fetch(PDO::FETCH_ASSOC)) : ?>
-                <div class="box24">
+      
+                <div class="user_box_front">
                 <li><tr>
-                    <td><?php echo h($articles['username'])?></td><br>
-                    <td><?php echo h($articles['message']);?></td>
-                    <td><?php echo h($articles['postedAt']);?></td>
+                    <div class="body">
+                    <td> <div class="icon size40" style="background-image: url('https://menta.work/resource/img/noimage.png');"></div></td>
+                    <td><div class="bold"><?php echo h($articles['username'])?></div></td>
+                    <td><div class="small"><?php echo h($articles['postedAt']);?></div></td>
+                    <td><div class="small2"><?php echo h($articles['message']);?></div></td>
+                    </div>
                     <td>
                     <form action="" method="post">
 						<input type="hidden" name="delete_id" value=<?php echo $articles['id']; ?>>
                         <input type="hidden" name="delete_username" value=<?php echo $articles['username']; ?>>
-						<button class="btn btn-danger" name="delete" type="submit">削除</button>
+						<button class="button" name="delete" type="submit">削除</button>
 					</form>
                     </td>
                 </tr>
@@ -123,6 +149,6 @@ if (isset($_POST['regist'])){
         </ul>
 
     </section>
-</div>
+    </div>
 </body>
 </html>

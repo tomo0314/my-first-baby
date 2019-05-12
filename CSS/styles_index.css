@@ -1,14 +1,16 @@
 body{
     text-align:center;
     font-family: 'ＭＳ Ｐ明朝','MS PMincho','ＭＳ 明朝', 'MS Mincho','Yu Mincho Light','YuMincho','Yu Mincho','游明朝体',sans-serif;
-    background:#333333;
+    background:white;
     margin:0 0;
     padding:0 0;
 }
 
 .contaigner{
     width:880px;
+    height:auto;
     margin:30px auto;
+    padding:30px 0 ;
     background:white;
 }
 
@@ -23,10 +25,32 @@ ul {
 
 .header h1{
     position: absolute;
-    color:white;
-    top:50vh;
-    left:30px;
-    font-size:30px;
+    color:#222222;
+    top:40vh;
+    right:50px;
+    font-size:45px;
+    padding-left:40px;
+    padding-bottom:5px;
+}
+
+.header h1:before {
+  position: absolute;
+  content: '';
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 0;
+  border: none;
+  border-left: solid 15px transparent;
+  border-bottom: solid 15px #222222;
+}
+.header h1:after {
+  position: absolute;
+  content: '';
+  bottom: -3px;
+  left: 10px;
+  width: 100%;
+  border-bottom: solid 3px #333333;
 }
 
 h2 {
@@ -38,9 +62,9 @@ h2 {
   h2:after {
     content: "";
     display: block;
-    height: 4px;
-    background: -webkit-linear-gradient(to right, gray, transparent);
-    background: linear-gradient(to right, gray, transparent);
+    height: 2px;
+    background: -webkit-linear-gradient(to right, #444444, transparent);
+    background: linear-gradient(to right, #444444, transparent);
   }
 
 .header_img{
@@ -58,15 +82,90 @@ h2 {
 }
 
 
-
-.username{
-  text-align: left;
+.message .name{
+  border-bottom: dotted 2px #333333;
 }
 
-.box24{
-    margin: 2em auto;
-    padding: 1em;
-    width: 90%;
-    background-color: #FFFFFF; /* 背景色 */
-    box-shadow: 0 0 5px 1px #ccc; /* 影 */
-   }
+/* ------------------------------- */
+.user_box_front {
+  margin: 10px 100px 10px 100px;
+  padding:30px;
+  display: flex;
+  text-align:left;  
+ } 
+
+element.style {
+  background-image: url(https://menta.work/resource/img/noimage.png);
+}
+
+.user_box_front{
+  position:relative;
+}
+
+.user_box_front .icon {
+  margin: 0 20px 0 0;
+}
+
+.size40 {
+  width: 30px;
+  height: 30px;
+}
+
+.size40 {
+  width: 40px;
+  height: 40px;
+}
+
+.icon {
+  margin: 0 auto;
+  border-radius: 50%;
+  background-position: top;
+  background-size: cover;
+  float:left;
+}
+
+.user_box_front .body {
+  width: 100%;
+}
+
+.bold {
+  font-weight: 700;
+  float:left;
+  margin:0 15px 0 0;
+}
+
+.plan_detail .small {
+  font-size: 13px!important;
+  color: #666;
+  float:left;
+}
+
+.plan_detail .small2 {
+  font-size: 14px!important;
+}
+
+button{
+  position:absolute;
+  right:30px;
+  bottom:10px;
+  display: inline-block;
+  padding: 2px 4px;
+  text-decoration: none;
+  color: #333333;
+  background:white;
+  border: dashed 1px #333333;
+  border-radius: 3px;
+  transition: .4s; 
+}
+
+button:hover {
+  border-style: dotted;
+  color: white;
+  background:#555555;
+}
+
+
+
+
+
+
