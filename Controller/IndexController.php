@@ -31,6 +31,7 @@ class IndexController
          * 投稿の読み込み設定
         */
 
+
         #データベース接続
         $table=Db::getArticlesTable();
         if(!$table){
@@ -62,6 +63,12 @@ class IndexController
             if(!isset($_SESSION["username"])){
                 $this->_errorMessage="書き込みをするためには、ログインが必要です。";
                 return;
+            }
+
+            #CSRF対策：トークンの認証
+            if(!CsrfValidator::checkToken(filter_input(INPUT_POST, 'token_post'))){
+            header('Content-Type: text/plain; charset=UTF-8', true, 400);
+            die ('不正なPOSTが行われました。');
             }
             
             #ユーザー名・本文の取得
@@ -108,6 +115,12 @@ class IndexController
             if($_SESSION['username'] !== $delete_username){
                 $this->_errorMessage="書き込んだユーザーのみ削除をすることができます。";
                 return;
+            }
+
+            #CSRF対策：トークンの認証
+            if(!CsrfValidator::checkToken(filter_input(INPUT_POST, 'token_delete'))){
+            header('Content-Type: text/plain; charset=UTF-8', true, 400);
+            die ('不正なPOSTが行われました。');
             }
 
             //データベース接続

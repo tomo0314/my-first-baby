@@ -39,6 +39,12 @@ class AccountController
                 return;
             }
 
+            #CSRF対策：トークンの認証
+            if(!CsrfValidator::checkToken(filter_input(INPUT_POST, 'token'))){
+                header('Content-Type: text/plain; charset=UTF-8', true, 400);
+                die ('不正なPOSTが行われました。');
+            }
+
             #emailの取得
             $email= $_POST["email"];
 
@@ -98,9 +104,9 @@ class AccountController
 
 
     public function signup(){
-        if (isset($_POST["signUp"])) {
-            
-            session_start();
+        session_start();
+
+        if (isset($_POST["signUp"])) {         
 
             if (empty($_POST["username"])) {
                 $this->_errorMessage="ユーザー名が未入力です。";
@@ -126,7 +132,13 @@ class AccountController
                 $this->_errorMessage="再入力されたパスワードが一致していません。";
                 return;
             }
-            
+
+            #CSRF対策：トークンの認証
+            if(!CsrfValidator::checkToken(filter_input(INPUT_POST, 'token'))){
+                header('Content-Type: text/plain; charset=UTF-8', true, 400);
+                die ('不正なPOSTが行われました。');
+            }
+                        
             #ユーザー情報の取得
             $username=$_POST["username"];
             $email=$_POST["email"];

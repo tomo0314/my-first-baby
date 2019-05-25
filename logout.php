@@ -9,7 +9,6 @@ $errorMessage = $controller->get_errorMessage()
 ?>
 
 
-
 <!DOCTYPE html>
 
 <html lang="ja">

@@ -46,6 +46,7 @@ $signupMessage = $controller->get_signupMessage();
             <input type="password" id="password2" name="password2" value="" placeholder="再度パスワードを入力">
             <br>
         </div>
+        <input type="hidden" name="token" value="<?=CsrfValidator::setToken()?>">
         <div class="button-panel">
             <input type="submit" id="signUp" class="button" name="signUp" value="Sign Up">
         </div>

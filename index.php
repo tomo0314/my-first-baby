@@ -38,7 +38,8 @@ function h($s){
             <div class="name">名前</div>
             <?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES); ?><br>
             <div class="message">メッセージ</div><br>
-            <textarea name="message" cols="30" rows="3" maxlength="80" wrap="hard" ></textarea><br>
+            <textarea name="message" cols="30" rows="3" maxlength="140" wrap="hard" ></textarea><br>
+            <input type="hidden" name="token_post" value="<?=CsrfValidator::setToken()?>">       
             <input class="button" type="submit" name="regist" value="投稿">
         </form>
     </section>
@@ -66,6 +67,7 @@ function h($s){
                     <form action="" method="post">
 						<input type="hidden" name='delete_id' value=<?php echo $article['id']; ?>>
                         <input type="hidden" name='delete_username' value=<?php echo $article['username']; ?>>
+                        <input type="hidden" name="token_delete" value="<?=CsrfValidator::setToken()?>">       
 						<button name="delete" type="submit">削除</button>
 					</form>
                     </td>

@@ -7,6 +7,7 @@
 require_once (__DIR__. '/../Config/config.php');
 require_once 'Table/UserdataTable.php';
 require_once 'Table/ArticlesTable.php';
+require_once (__DIR__. '/../csrf.php');
 
 
 class Db
