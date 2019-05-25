@@ -6,10 +6,11 @@ body{
     padding:0 0;
 }
 
+
 .contaigner{
     width:880px;
     height:auto;
-    margin:30px auto;
+    margin:30px auto 100px auto;
     padding:30px 0 ;
     background:white;
 }
@@ -17,7 +18,13 @@ body{
 
 ul {
     list-style: none;
+    padding: 0;
+    margin:0;
   }
+
+li{
+  margin:5px 0;
+}
 
 .header{
     position:relative;
@@ -75,15 +82,42 @@ h2 {
     padding:0 0;
 }
 
+.name{
+  margin-top:5px;
+  margin-bottom:5px;
+}
 
 .message{
-    margin-top:5px;
-    margin-bottom:12px;
+    margin-top:30px;
+    margin-bottom:3px;
 }
 
 
-.message .name{
-  border-bottom: dotted 2px #333333;
+textarea{
+  width:400px;
+  height:100px;
+  border: dotted 1px #333333;
+  border-radius: 2px;
+  box-shadow: 0 0 8px #e2e2e2;
+  margin-top:0;
+}
+
+.button{
+  display: inline-block;
+  padding: 2px 4px;
+  text-decoration: none;
+  color: white;
+  background:#555555;
+  border: dashed 1px #555555;
+  border-radius: 3px;
+  transition: .4s; 
+  margin: 10px;
+}
+
+.button:hover {
+  border-style: dotted;
+  color: #333333;
+  background:white;
 }
 
 /* ------------------------------- */
@@ -103,29 +137,32 @@ element.style {
 }
 
 .user_box_front .icon {
-  margin: 0 20px 0 0;
+  margin: 0 20px;
+  padding:0 0 30px 0;
 }
 
-.size40 {
-  width: 30px;
-  height: 30px;
+
+.fa-user-circle {
+  zoom:3;
 }
 
-.size40 {
-  width: 40px;
-  height: 40px;
-}
-
-.icon {
-  margin: 0 auto;
-  border-radius: 50%;
-  background-position: top;
-  background-size: cover;
+.fa-user-circle {
+  margin: 0 10px 10px 0;
   float:left;
 }
 
-.user_box_front .body {
-  width: 100%;
+.comment .small2{
+
+  width:600px;
+  text-align:left;
+  padding: 25px 0;
+}
+
+.user_box_front{
+  width: 80%;
+  margin: 0 auto;
+  max-width:700px;
+  
 }
 
 .bold {
@@ -162,6 +199,21 @@ button:hover {
   border-style: dotted;
   color: white;
   background:#555555;
+}
+
+.sns{
+  font-size:23px;
+}
+
+.sns>a{
+  margin:30px 10px;
+}
+
+.sns>a{
+  color:#333333;
+}
+.sns>a:hover{
+  color:skyblue;
 }
 
 

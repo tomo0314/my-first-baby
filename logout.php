@@ -1,24 +1,11 @@
 <?php 
-session_start();
 
-$errorMessage="";
+require_once(__DIR__.'/Controller/AccountController.php');
 
-if(isset($_SESSION["username"])){
-    $errorMessage="ログアウトしました";
-}else{
-    $errorMessage="セッションがタイムアウトしました";
-}
+$controller = new AccountController();
+$controller->logout();
+$errorMessage = $controller->get_errorMessage()
 
-#セッション変数（ユーザーの情報）を空の配列によって初期化する
-$_SESSION=array();
-
-#cookie（ブラウザ）上のユーザーデータも削除
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time()-42000, '/');
-}
-
-#ユーザーのサーバーからのセッションの削除
-session_destroy();
 ?>
 
 

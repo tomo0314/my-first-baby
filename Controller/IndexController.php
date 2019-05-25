@@ -1,99 +1,173 @@
 <?php
 
-require_once (__DIR__. '/../Model/Db/DbBase.php');
+require_once (__DIR__. '/../Db/DbBase.php');
 
 /**
- * TOP画面（掲示板画面）の挙動を司る
+ * TOP画面（掲示板画面）の挙動を司るphpの動きを関数化する
  */
 class IndexController
 {
     /**
-     * @var string エラーメッセージ
+     * エラーメッセージ
+     * @var string 
      */
     private $_errorMessage;
+
+    /**
+     * 投稿読み込みの戻り値
+     * @var string 
+     */
+    public $_articles;
 
     /**
      * 実際のページロジックを実行
      */
 
-     //POSTアクセス以外であれば何もしない
     public function execute(){
-        
-        if(!$this->_isPost()){
-            return;
-        }
 
-        //必要なパラメータが揃っているか確認
-        //メッセージの確認
-        if (!isset($_POST["message"])){
-            $this->_errorMessage="本文を入力してください。";
-            return;
-        }
+        session_start();
 
-        #ログインの有無の確認
-        if(!isset($_SESSION["username"])){
-            $this->_errorMessage="書き込みをするためには、ログインが必要です。";
-            return;
-        }
-            
-        #ユーザー名・本文の取得
-        $username=($_SESSION["username"]);
-        $message=($_POST["message"]);
+        /**
+         * 投稿の読み込み設定
+        */
 
-        #投稿時刻の取得
-        date_default_timezone_set('Asia/Tokyo');
-        $postedAt=date("Y-m-d:i:s");
-
-        #データベースへの接続
-        $table=Db::getUserTable();
+        #データベース接続
+        $table=Db::getArticlesTable();
         if(!$table){
             die('データベース接続エラー');
         }
-
-        #INSERT
-        $r = $table->insert($email,$password);
         
-        #理由はよくわからないが挿入に失敗した場合のエラー表示
-        if(!$r){
-            $this->_errorMessage="投稿に失敗しました";//適切なエラーメッセージに変更
+        #投稿の読み込み
+        $this->_articles = $table->SelectMessage();
+        
+        #理由はよくわからないが投稿の読み込みに失敗した場合のエラー表示
+        if(!$this->_articles){
+            $this->_errorMessage="投稿の読み込みに失敗しました";
         }
+
+
+        /**
+         * 投稿の書き込み設定
+         */
+        if (isset($_POST['regist'])){
+           
+            //必要なパラメータが揃っているか確認
+            //メッセージの確認
+            if (empty($_POST["message"])){
+                $this->_errorMessage="本文を入力してください。";
+                return;
+            }
             
-        #INSERT後、ページを更新
-        _redirectToMyself();
+            #ログインの有無の確認
+            if(!isset($_SESSION["username"])){
+                $this->_errorMessage="書き込みをするためには、ログインが必要です。";
+                return;
+            }
+            
+            #ユーザー名・本文の取得
+            $username=($_SESSION["username"]);
+            $message=($_POST["message"]);
+    
+            #投稿時刻の取得
+            date_default_timezone_set('Asia/Tokyo');
+            $postedAt=date("Y-m-d H:i:s");
+    
+            #データベースへの接続
+            $table=Db::getArticlesTable();
+            if(!$table){
+                die('データベース接続エラー');//メッセージを表示してスクリプト終了
+            }
+    
+            #INSERT
+            $r = $table->InsertMessage($username,$message,$postedAt);
+            
+            #理由はよくわからないが挿入に失敗した場合のエラー表示
+            if(!$r){
+                $this->_errorMessage="投稿に失敗しました";
+            }
+                
+            #INSERT後、ページを更新
+            $this->_redirectToMyself();
 
-        /**
-        * アクセスがPOSTかどうか判定
-        * @return bool
-        */   
-
-        private function _isPost(){
-            return($_SERVER['REQUEST_METHOD']==='POST');
         }
 
         /**
-        * ページにリダイレクト（再読込）
-        * これはPOSTでアクセスされたとき、
-        * 画面リロードの際に二重にPOST処理が行われることを防ぐ用途で使われる
-        */
+         *投稿の削除設定
+         */
+        if (isset($_POST['delete'])){
 
-        private function _redirectToMyself(){
-            header("Location: " . $_SERVER['PHP_SELF']);
-        }
+            $delete_username = $_POST['delete_username'];
 
-        /**
-        * html表示の段階で使うパラメータの設定
-        * @param $errorMessage
-        */
-        private function _errorMessage(){
-            $this->_errorMessage = $errorMessage;
-        }
+            //ログインの確認
+            if(!isset($_SESSION['username'])){
+                $this->_errorMessage="投稿の削除にはログインが必要です。";
+                return;    
+            }
+            
+            //書き込んだユーザーのみ削除可能に設定
+            if($_SESSION['username'] !== $delete_username){
+                $this->_errorMessage="書き込んだユーザーのみ削除をすることができます。";
+                return;
+            }
 
-        /**
-        * html表示に使用するパラメータを取得
-        * @return array
-        */
-        private function getValue(){
-            return $this->_errorMessage;
+            //データベース接続
+            $table=Db::getArticlesTable();
+            if(!$table){
+                die('データベース接続エラー');
+            }
+            
+            //deleteの実行
+            try{
+                $delete_id=$_POST['delete_id'];
+                $table->DeleteMessage($delete_id);
+            }catch(PDO $e){
+                $this->_errorMessage="投稿の削除に失敗しました。";
+            }
+
+            //投稿完了のメッセージ
+            $this->_errorMessage="削除が完了しました。";
+
+
+            #INSERT後、ページを更新
+            $this->_redirectToMyself();
+            exit;
+          
         }
+    }   
+    
+    /**
+    * ページにリダイレクト（再読込）
+    * これはPOSTでアクセスされたとき、二重に処理されるのを防ぐため。
+     * @return bool
+     */
+    private function _redirectToMyself(){
+        header("Location: " .$_SERVER['PHP_SELF'],true,301);
+        exit();
+    }
+
+    
+    /**
+    * html表示の段階で使うパラメータの設定
+    * @param $errorMessage
+    */
+    private function _errorMessage(){
+        $this->_errorMessage = $errorMessage;
+    }
+    
+
+    /**
+    * html表示に使用するパラメータを取得
+    * @return array
+    */
+    public function getErrorMessage(){
+        return $this->_errorMessage;
+    }
+
+    /**
+    * html表示に使用するパラメータを取得
+    * @return array
+    */
+    public function getArticles(){
+        return $this->_articles;
     }
 }

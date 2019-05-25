@@ -1,5 +1,16 @@
 <?php
 
+
+require_once(__DIR__.'/Controller/AccountController.php');
+
+
+$controller = new AccountController();
+$controller->login();
+$errorMessage=$controller->get_errorMessage();
+
+
+
+/*
 session_start();
 
 if (isset($_SESSION['username'])){
@@ -66,6 +77,9 @@ if (isset($_POST["login"])){
         }
     }
 }
+
+*/
+
 ?>
 
 

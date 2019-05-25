@@ -1,24 +1,38 @@
 <?php 
 
 /*
-ユーザーテーブル取得と、データベース接続のための関数設定
+ユーザーテーブルクラス取得と、データベース接続のための関数設定
 */
 
-require_once dirname(__FILE__) . '/../../Config/config.php';
-require_once 'Table/UserTable.php';
+require_once (__DIR__. '/../Config/config.php');
+require_once 'Table/UserdataTable.php';
+require_once 'Table/ArticlesTable.php';
+
 
 class Db
 {   
     /**
-     * ユーザーテーブルを取得
-     * @return Usertable|null
+     * データベースに接続＆ユーザーデータクラスを取得
+     * @return UserdataTable|null
      */
-    static public function getUserTable(){
+    static public function getUserdataTable(){
         $pdo = self::_connect();
         if(!$pdo){
             return null;
         }
-        return new UserTable($pdo);
+        return new UserdataTable($pdo);
+    }
+
+    /**
+     * データベースに接続＆アーティクルクラスを取得
+     * @return ArticlesTable|null
+     */
+    static public function getArticlesTable(){
+        $pdo = self::_connect();
+        if(!$pdo){
+            return null;
+        }
+        return new ArticlesTable($pdo);
     }
 
     /**
@@ -28,14 +42,15 @@ class Db
      */
     static private function _connect(){
         try{
-            $config = getGlobalConfig();
-            $db = new PDO(
-                'mysql:host=' . $config['mysql']['host'] . ';dname=' . $config['mysql']['dbname'] . '; charset=utf8',
+            $config = getGrobalConfig();
+            $dsn = new PDO(
+                'mysql:host=' . $config['mysql']['host'] . ';dbname=' . $config['mysql']['dbname'] . '; charset=utf8',
                 $config['mysql']['username'],
                 $config['mysql']['password']);
-            return $db;
+            return $dsn;
         }catch (Exception $e){
-            return $false;
+            return false;
+             // TODO: 本来なら例外を握りつぶすべきではないが、仮でこうしておく
         }
     }
 }
