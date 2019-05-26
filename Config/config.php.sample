@@ -7,10 +7,10 @@
 function getGrobalConfig() {
     return [
         'mysql' => [
-            'username' => 'still',
-            'password' => 'Rose0314@',
-            'dbname' => 'bbs',
-            'host' => 'localhost'
+            'username' => '',
+            'password' => '',
+            'dbname' => '',
+            'host' => ''
         ]
     ];
 }
